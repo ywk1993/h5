@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.muzhi.dao.IncomeDao">
+  <resultMap id="BaseResultMap" type="com.muzhi.model.Income">
+    <id column="uid" jdbcType="INTEGER" property="uid" />
+    <result column="last_income" jdbcType="INTEGER" property="lastIncome" />
+    <result column="haohua" jdbcType="INTEGER" property="haohua" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from income
+    where uid = #{uid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.muzhi.model.Income">
+    insert into income (uid, last_income,haohua)
+    values (#{uid,jdbcType=INTEGER}, #{lastIncome,jdbcType=INTEGER},#{haohua,jdbcType=INTEGER})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.muzhi.model.Income">
+    update income
+    set last_income = #{lastIncome,jdbcType=INTEGER},
+    	haohua = #{haohua,jdbcType=INTEGER}
+    where uid = #{uid,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select uid, last_income,haohua
+    from income
+    where uid = #{uid,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select uid, last_income,haohua
+    from income
+  </select>
+  
+  <!-- 获取地区排行 -->
+  <select id="getAreaRank" resultType="com.muzhi.model.Ranks">
+  	select 
+  	b.id as id,
+  	b.username as `name`,
+  	a.last_income as rankValue,
+  	b.avatar_url as imgUrl 
+  	from 
+  	income a LEFT JOIN login b on a.uid = b.id 
+  	ORDER BY a.last_income desc
+  	LIMIT 0,1000
+  </select>
+  <!-- 获取省份排行 -->
+  <select id="getProvinceRank" resultType="com.muzhi.model.Ranks">
+  	SELECT
+	b.id AS id,
+	b.username AS `name`,
+	a.last_income AS rankValue,
+	b.avatar_url AS imgUrl
+	FROM
+		income a
+	LEFT JOIN login b ON a.uid = b.id
+	INNER JOIN province c ON a.uid = c.uid
+	WHERE
+		c.province = #{province}
+	ORDER BY
+		a.last_income DESC
+		LIMIT 0,1000
+  </select>
+  <!-- 获取好友排行 -->
+  <select id="getFriendRank" resultType="com.muzhi.model.Ranks">
+  	select 
+  	b.id as id,
+  	b.username as `name`,
+  	a.last_income as rankValue,
+  	b.avatar_url as imgUrl 
+  	from 
+  	income a LEFT JOIN login b on a.uid = b.id 
+  	where a.uid in
+  	<foreach item="item" index="index" collection="list" open="(" separator="," close=")">  
+	  #{item}  
+	</foreach> 
+  	ORDER BY a.last_income desc
+  	LIMIT 0,1000
+  </select>
+  
+    <!-- 获取豪华度地区排行 -->
+  <select id="getHaohuaAreaRank" resultType="com.muzhi.model.Ranks">
+  	select 
+  	b.id as id,
+  	b.username as `name`,
+  	a.Haohua as rankValue,
+  	b.avatar_url as imgUrl 
+  	from 
+  	income a LEFT JOIN login b on a.uid = b.id 
+  	ORDER BY a.haohua desc
+  	LIMIT 0,1000
+  </select>
+  <!-- 获取豪华度省份排行 -->
+  <select id="getHaohuaProvinceRank" resultType="com.muzhi.model.Ranks">
+  	SELECT
+	b.id AS id,
+	b.username AS `name`,
+	a.Haohua AS rankValue,
+	b.avatar_url AS imgUrl
+	FROM
+		income a
+	LEFT JOIN login b ON a.uid = b.id
+	INNER JOIN province c ON a.uid = c.uid
+	WHERE
+		c.province = #{province}
+	ORDER BY
+		a.Haohua DESC
+		LIMIT 0,1000
+  </select>
+  <!-- 获取豪华度好友排行 -->
+  <select id="getHaohuaFriendRank" resultType="com.muzhi.model.Ranks">
+  	select 
+  	b.id as id,
+  	b.username as `name`,
+  	a.Haohua as rankValue,
+  	b.avatar_url as imgUrl 
+  	from 
+  	income a LEFT JOIN login b on a.uid = b.id 
+  	where a.uid in
+  	<foreach item="item" index="index" collection="list" open="(" separator="," close=")">  
+	  #{item}  
+	</foreach> 
+  	ORDER BY a.Haohua desc
+  	LIMIT 0,1000
+  </select>
+  
+  <update id="updateIncome">
+  	update income set last_income = 0
+  </update>
+</mapper>

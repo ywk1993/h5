@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.muzhi.dao.MessageDao">
+  <resultMap id="BaseResultMap" type="com.muzhi.model.Message">
+    <result column="uuid" jdbcType="VARCHAR" property="uuid" />
+    <result column="uid" jdbcType="VARCHAR" property="uid" />
+    <result column="friendid" jdbcType="VARCHAR" property="friendid" />
+    <result column="message_content" jdbcType="VARCHAR" property="messageContent" />
+    <result column="message_result" jdbcType="INTEGER" property="messageResult" />
+    <result column="date" jdbcType="TIMESTAMP" property="date" />
+  </resultMap>
+  
+ <resultMap type="com.muzhi.model.vo.Friends" id="BaseMap">
+		<result column="username" property="username"/>
+		<result column="uid" property="friendid"/>		
+		<result column="nickname" property="nickname"/>
+		<result column="openid" property="openid"/>
+		<result column="avatar_url" property="avatarUrl"/> 
+		<result column="rate_level" property="rank"/>
+	</resultMap>
+	
+	<insert id="insertList" parameterType="java.util.List">
+		<foreach collection="list" separator=";" item="it">
+			insert into message(uuid, uid, friendid, message_content, message_result, date)
+				values (#{it.uuid}, #{it.uid}, #{it.friendid}, #{it.messageContent}, #{it.messageResult}, #{it.date})			
+		</foreach>
+	</insert>
+	
+	<update id="updateList" parameterType="java.util.List">
+		<foreach collection="list" separator=";" item="it">
+			update message set message_result = #{it.messageResult}, message_content = #{it.messageContent}, date = #{it.date} where uuid = #{it.uuid}
+		</foreach>
+	</update>
+	
+	<select id="selectList" parameterType="java.lang.String" resultMap="BaseResultMap">
+		select * from message where friendid = #{self} and message_result != 0
+	</select>
+	
+	<select id="selectFriendList" parameterType="java.lang.String" resultMap="BaseMap">
+		select t.username, t.id, t.uid,t.nickname, t.openid, t.avatar_url, r.rate_level as rank from (
+		select * from login where uid in (select m.uid from message m INNER JOIN login l on m.message_result = 10 and m.friendid = #{self} and l.uid = #{self} )
+		) t LEFT JOIN rank r on t.id = r.id
+	</select>
+</mapper>

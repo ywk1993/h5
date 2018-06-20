@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.muzhi.dao.RankingDao">
+  <resultMap id="BaseResultMap" type="com.muzhi.model.Ranking">
+    <id column="uid" jdbcType="INTEGER" property="uid" />
+    <result column="income" jdbcType="INTEGER" property="income" />
+    <result column="rate_level" jdbcType="INTEGER" property="rateLevel" />
+    <result column="haohua" jdbcType="INTEGER" property="haohua" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from ranking
+    where uid = #{uid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.muzhi.model.Ranking">
+    insert into ranking (uid, income, rate_level, 
+      haohua)
+    values (#{uid,jdbcType=INTEGER}, #{income,jdbcType=INTEGER}, #{rateLevel,jdbcType=INTEGER}, 
+      #{haohua,jdbcType=INTEGER})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.muzhi.model.Ranking">
+    update ranking
+    set income = #{income,jdbcType=INTEGER},
+      rate_level = #{rateLevel,jdbcType=INTEGER},
+      haohua = #{haohua,jdbcType=INTEGER}
+    where uid = #{uid,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select uid, income, rate_level, haohua
+    from ranking
+    where uid = #{uid,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select uid, income, rate_level, haohua
+    from ranking
+  </select>
+  <!-- 更新收益信息 -->
+  <update id="updateIncome">
+  	update income,ranking set ranking.income = income.last_income WHERE income.uid = ranking.uid 
+  </update>
+  <!-- 更新评级信息信息 -->
+  <update id="updateRate">
+  	update ranking,rank set ranking.rate_level = rank.rate_level where ranking.uid = rank.id
+  </update>
+  <!-- 更新豪华度信息 -->
+  <update id="updateHaohua">
+  	update income,ranking set ranking.haohua = income.haohua WHERE income.uid = ranking.uid 
+  </update>
+  
+  <!-- 获取全部收益排行 -->
+  <select id="getIncomeAreaRank" resultType="com.muzhi.model.Ranks">
+  	SELECT
+	a.income AS rankValue,
+	a.uid AS id,
+	b.username AS `name`,
+	b.avatar_url AS imgUrl
+	FROM
+		ranking a
+	INNER JOIN login b ON a.uid = b.id
+	ORDER BY
+		a.income DESC
+	LIMIT 0,1000
+  </select>
+  <!-- 获取省份收益排行 -->
+  <select id="getIncomeProvinceRank" resultType="com.muzhi.model.Ranks">
+  	SELECT
+	a.income AS rankValue,
+	a.uid AS id,
+	b.username AS `name`,
+	b.avatar_url AS imgUrl
+	FROM
+		ranking a
+	INNER JOIN login b ON a.uid = b.id
+	INNER JOIN province c ON a.uid = c.uid
+	WHERE c.province = #{province}
+	ORDER BY a.income desc
+	LIMIT 0,1000
+  </select>
+  <!-- 获取好友收益排行 -->
+  <select id="getIncomeFriendRank" resultType="com.muzhi.model.Ranks">
+  	SELECT
+	a.income AS rankValue,
+	a.uid AS id,
+	b.username AS `name`,
+	b.avatar_url AS imgUrl
+	FROM
+		ranking a
+	INNER JOIN login b ON a.uid = b.id
+	WHERE a.uid in
+	<foreach item="item" index="index" collection="list" open="(" separator="," close=")">  
+	  #{item}  
+	</foreach> 
+	ORDER BY
+		a.income DESC
+	LIMIT 0,1000
+  </select>
+  
+  <!-- 获取全部评级排行 -->
+  <select id="getRateAreaRank" resultType="com.muzhi.model.Ranks">
+  	SELECT
+	a.rate_level AS rankValue,
+	a.uid AS id,
+	b.username AS `name`,
+	b.avatar_url AS imgUrl
+	FROM
+		ranking a
+	INNER JOIN login b ON a.uid = b.id
+	ORDER BY
+		a.rate_level DESC
+	LIMIT 0,1000
+  </select>
+  <!-- 获取省份评级排行 -->
+  <select id="getRateProvinceRank" resultType="com.muzhi.model.Ranks">
+  	SELECT
+	a.rate_level AS rankValue,
+	a.uid AS id,
+	b.username AS `name`,
+	b.avatar_url AS imgUrl
+	FROM
+		ranking a
+	INNER JOIN login b ON a.uid = b.id
+	INNER JOIN province c ON a.uid = c.uid
+	WHERE c.province = #{province}
+	ORDER BY a.rate_level desc
+	LIMIT 0,1000
+  </select>
+  <!-- 获取好友评级排行 -->
+  <select id="getRateFriendRank" resultType="com.muzhi.model.Ranks">
+  	SELECT
+	a.rate_level AS rankValue,
+	a.uid AS id,
+	b.username AS `name`,
+	b.avatar_url AS imgUrl
+	FROM
+		ranking a
+	INNER JOIN login b ON a.uid = b.id
+	WHERE a.uid in
+	<foreach item="item" index="index" collection="list" open="(" separator="," close=")">  
+	  #{item}  
+	</foreach> 
+	ORDER BY
+		a.rate_level DESC
+	LIMIT 0,1000
+  </select>
+  
+    <!-- 获取全部豪华度排行 -->
+  <select id="getHaohuaAreaRank" resultType="com.muzhi.model.Ranks">
+  	SELECT
+	a.haohua AS rankValue,
+	a.uid AS id,
+	b.username AS `name`,
+	b.avatar_url AS imgUrl
+	FROM
+		ranking a
+	INNER JOIN login b ON a.uid = b.id
+	ORDER BY
+		a.haohua DESC
+	LIMIT 0,1000
+  </select>
+  <!-- 获取省份豪华度排行 -->
+  <select id="getHaohuaProvinceRank" resultType="com.muzhi.model.Ranks">
+  	SELECT
+	a.haohua AS rankValue,
+	a.uid AS id,
+	b.username AS `name`,
+	b.avatar_url AS imgUrl
+	FROM
+		ranking a
+	INNER JOIN login b ON a.uid = b.id
+	INNER JOIN province c ON a.uid = c.uid
+	WHERE c.province = #{province}
+	ORDER BY a.haohua desc
+	LIMIT 0,1000
+  </select>
+  <!-- 获取好友豪华度排行 -->
+  <select id="getHaohuaFriendRank" resultType="com.muzhi.model.Ranks">
+  	SELECT
+	a.haohua AS rankValue,
+	a.uid AS id,
+	b.username AS `name`,
+	b.avatar_url AS imgUrl
+	FROM
+		ranking a
+	INNER JOIN login b ON a.uid = b.id
+	WHERE a.uid in
+	<foreach item="item" index="index" collection="list" open="(" separator="," close=")">  
+	  #{item}  
+	</foreach> 
+	ORDER BY
+		a.haohua DESC
+	LIMIT 0,1000
+  </select>
+</mapper>

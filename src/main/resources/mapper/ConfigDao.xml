@@ -1,0 +1,682 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.muzhi.dao.ConfigDao">
+
+	<select id="getConfigFood" resultType="com.muzhi.model.configbean.ConfigFood">
+		select
+		<include refid="foodParam"></include>
+		from config_food
+	</select>
+
+	<select id="getConfigSkill" resultType="com.muzhi.model.configbean.ConfigSkill">
+		select
+		<include refid="skillParam"></include>
+		from config_skill
+	</select>
+
+	<select id="getConfigStrength" resultType="com.muzhi.model.configbean.ConfigStrength">
+		select
+		<include refid="strengthParam"></include>
+		from config_strength
+	</select>
+
+	<select id="getConfigRole" resultType="com.muzhi.model.configbean.ConfigRole">
+		select *
+		from config_role
+	</select>
+
+	<select id="getConfigRestaurant" resultType="com.muzhi.model.configbean.ConfigRestaurant">
+		select
+		<include refid="restaurantParam" />
+		from config_restaurant
+	</select>
+
+	<select id="getConfigManor" resultType="com.muzhi.model.configbean.ConfigManor">
+		select
+		<include refid="manorParam" />
+		from config_manor
+	</select>
+
+	<select id="getConfigResearch" resultType="com.muzhi.model.configbean.ConfigResearch">
+		select
+		<include refid="researchParam" />
+		from config_research
+	</select>
+
+	<select id="getConfigResources" resultType="com.muzhi.model.configbean.ConfigResources">
+		select
+		<include refid="resourcesParam" />
+		from config_resources
+	</select>
+
+	<select id="getConfigFacilities" resultType="com.muzhi.model.configbean.ConfigFacilities">
+		select
+		<include refid="facilitiesParam" />
+		from config_facilities
+	</select>
+	<select id="getConfigCookcenter" resultType="com.muzhi.model.configbean.ConfigCookcenter">
+		select *
+		from
+		config_cookcenter
+	</select>
+	<select id="getConfigArticle" resultType="com.muzhi.model.configbean.ConfigArticle">
+		select *
+		from
+		config_article
+	</select>
+	<select id="getConfigOrder" resultType="com.muzhi.model.configbean.ConfigOrder">
+		select *
+		from config_order
+	</select>
+	<select id="getConfigRate" resultType="com.muzhi.model.configbean.ConfigRate">
+		select *
+		from config_rate
+	</select>
+	<select id="getConfigTask" resultType="com.muzhi.model.configbean.ConfigTask">
+		select *
+		from config_task
+	</select>
+	<select id="getConfigAdvancedProp" resultType="com.muzhi.model.configbean.ConfigAdvancedProp">
+		select *
+		from
+		config_advancedprop
+	</select>
+	<select id="getConfigLove" resultType="com.muzhi.model.configbean.ConfigLove">
+		select *
+		from config_love
+	</select>
+	<select id="getConfigfame" resultType="com.muzhi.model.configbean.Configfame">
+		select *
+		from config_fame
+	</select>
+	<select id="getConfigadvertise" resultType="com.muzhi.model.configbean.Configadvertise">
+		select *
+		from
+		config_advertise
+	</select>
+
+	<!-- 批量插入 1 -->
+	<insert id="insertConfigAdvancedProp">
+		insert into config_advancedprop (id, name, prop_levle,prop_type,
+		prop_qualify, logo,`describe`)
+		VALUES
+		<foreach collection="configAdvancedPropList" item="item"
+			index="index" separator=",">
+			(#{item.id,jdbcType=INTEGER},
+			#{item.name,jdbcType=VARCHAR},#{item.propLevel,jdbcType=INTEGER},
+			#{item.propType,jdbcType=INTEGER},#{item.propQualify,jdbcType=INTEGER},
+			#{item.logo,jdbcType=VARCHAR},#{item.describe,jdbcType=VARCHAR}
+			)
+		</foreach>
+		ON DUPLICATE KEY UPDATE name =
+		VALUES(name),
+		prop_levle =
+		VALUES(prop_levle),
+		prop_type =
+		VALUES(prop_type),
+		prop_qualify =
+		VALUES(prop_qualify),
+		logo =
+		VALUES(logo),
+		`describe` =
+		VALUES(`describe`)
+	</insert>
+	<!-- 批量插入 2 -->
+	<insert id="insertConfigadvertise">
+		insert into config_advertise (id, content, free_num,
+		need_ping_ji,
+		cost, sucess_tip,
+		fail_tip, crit_tip, add_fame,
+		success_rate, crit_rate)
+		VALUES
+		<foreach collection="configadvertiseList" item="item" index="index"
+			separator=",">
+			(#{item.id,jdbcType=INTEGER},
+			#{item.content,jdbcType=VARCHAR}, #{item.freeNum,jdbcType=INTEGER},
+			#{item.needPingJi,jdbcType=INTEGER}, #{item.cost,jdbcType=VARCHAR},
+			#{item.sucessTip,jdbcType=VARCHAR},
+			#{item.failTip,jdbcType=VARCHAR},
+			#{item.critTip,jdbcType=VARCHAR}, #{item.addFame,jdbcType=INTEGER},
+			#{item.successRate,jdbcType=INTEGER},
+			#{item.critRate,jdbcType=INTEGER})
+
+		</foreach>
+		ON DUPLICATE KEY UPDATE content =
+		VALUES(content),
+		free_num =
+		VALUES(free_num),
+		need_ping_ji =
+		VALUES(need_ping_ji),
+		cost =
+		VALUES(cost),
+		sucess_tip =
+		VALUES(sucess_tip),
+		fail_tip =
+		VALUES(fail_tip),
+		crit_tip =
+		VALUES(crit_tip),
+		add_fame =
+		VALUES(add_fame),
+		success_rate =
+		VALUES(success_rate),
+		crit_rate =
+		VALUES(crit_rate)
+	</insert>
+	<!-- 批量插入 3 -->
+	<insert id="insertConfigArticle">
+		insert into config_article (id, article_type, name,
+		model, use_type,
+		number,
+		haohua, love_type, love_add,
+		`condition`)
+		VALUES
+		<foreach collection="configArticleList" item="item" index="index"
+			separator=",">
+			(#{item.id,jdbcType=INTEGER},
+			#{item.articleType,jdbcType=INTEGER}, #{item.name,jdbcType=VARCHAR},
+			#{item.model,jdbcType=VARCHAR}, #{item.useType,jdbcType=INTEGER},
+			#{item.number,jdbcType=INTEGER},
+			#{item.haohua,jdbcType=INTEGER},
+			#{item.loveType,jdbcType=INTEGER}, #{item.loveAdd,jdbcType=INTEGER},
+			#{item.condition,jdbcType=INTEGER})
+
+		</foreach>
+		ON DUPLICATE KEY UPDATE
+		article_type = VALUES(article_type),
+		name =
+		VALUES(name),
+		model = VALUES(model),
+		use_type=VALUES(use_type),
+		number =
+		VALUES(number),
+		haohua =
+		VALUES(haohua),
+		love_type =
+		VALUES(love_type),
+		love_add =
+		VALUES(love_add),
+		`condition` =
+		VALUES(`condition`)
+	</insert>
+	<!-- 批量插入4 -->
+	<insert id="insertConfigCookcenter">
+		insert into config_cookcenter (level, makeLevel, power
+		)
+		VALUES
+		<foreach collection="configCookcenterList" item="item" index="index"
+			separator=",">
+			(#{item.level,jdbcType=INTEGER},
+			#{item.makelevel,jdbcType=INTEGER}, #{item.power,jdbcType=INTEGER}
+			)
+
+		</foreach>
+		ON DUPLICATE KEY UPDATE makeLevel =
+		VALUES(makelevel),
+		power =
+		VALUES(power)
+	</insert>
+	<!-- 批量插入 5 -->
+	<insert id="insertConfigFacilities">
+		insert into config_facilities (id, facilitiesId, `level`,
+		attribute,
+		needGold, needLevel
+		)
+		VALUES
+		<foreach collection="configFacilitiesList" item="item" index="index"
+			separator=",">
+			(#{item.id,jdbcType=INTEGER},
+			#{item.facilitiesid,jdbcType=INTEGER},
+			#{item.level,jdbcType=INTEGER},
+			#{item.attribute,jdbcType=INTEGER},
+			#{item.needgold,jdbcType=INTEGER},
+			#{item.needlevel,jdbcType=INTEGER}
+			)
+
+		</foreach>
+		ON DUPLICATE KEY UPDATE facilitiesId =
+		VALUES(facilitiesid),
+		`level` =
+		VALUES(`level`),
+		attribute =
+		VALUES(attribute),
+		needGold =
+		VALUES(needGold),
+		needLevel =
+		VALUES(needLevel)
+	</insert>
+	<!-- 批量插入6 -->
+	<insert id="insertConfigfame">
+		insert into config_fame (fame_level, fame_num, cookbook1,
+		random1,
+		cookbook2, random2,
+		cookbook3, random3, cookbook4,
+		random4)
+		VALUES
+		<foreach collection="configfameList" item="item" index="index"
+			separator=",">
+			(#{item.fameLevel,jdbcType=INTEGER},
+			#{item.fameNum,jdbcType=INTEGER}, #{item.cookbook1,jdbcType=INTEGER},
+			#{item.random1,jdbcType=INTEGER}, #{item.cookbook2,jdbcType=INTEGER},
+			#{item.random2,jdbcType=INTEGER},
+			#{item.cookbook3,jdbcType=INTEGER},
+			#{item.random3,jdbcType=INTEGER}, #{item.cookbook4,jdbcType=INTEGER},
+			#{item.random4,jdbcType=INTEGER})
+
+		</foreach>
+		ON DUPLICATE KEY UPDATE fame_num =
+		VALUES(fame_num),
+		cookbook1 =
+		VALUES(cookbook1),
+		random1 =
+		VALUES(random1),
+		cookbook2 =
+		VALUES(cookbook2),
+		random2 =
+		VALUES(random2),
+		cookbook3 =
+		VALUES(cookbook3),
+		random3 =
+		VALUES(random3),
+		cookbook4 =
+		VALUES(cookbook4),
+		random4 =
+		VALUES(random4)
+	</insert>
+	<!-- 批量插入7 -->
+	<insert id="insertConfigFood">
+		insert into config_food (foodId, foodName, foodLogo,
+		foodLevel,
+		foodType, foodQualify,
+		makeTime, metarial, strength,
+		price)
+		VALUES
+		<foreach collection="configFoodList" item="item" index="index"
+			separator=",">
+			(#{item.foodid,jdbcType=INTEGER},
+			#{item.foodname,jdbcType=VARCHAR}, #{item.foodlogo,jdbcType=VARCHAR},
+			#{item.foodlevel,jdbcType=INTEGER},
+			#{item.foodtype,jdbcType=INTEGER},
+			#{item.foodqualify,jdbcType=INTEGER},
+			#{item.maketime,jdbcType=INTEGER}, #{item.metarial,jdbcType=VARCHAR},
+			#{item.strength,jdbcType=INTEGER},
+			#{item.price,jdbcType=INTEGER})
+
+		</foreach>
+		ON
+		DUPLICATE KEY UPDATE foodName =VALUES(foodName),
+		foodLogo =
+		VALUES(foodLogo),
+		foodLevel =
+		VALUES(foodLevel),
+		foodType =
+		VALUES(foodType),
+		foodQualify =
+		VALUES(foodQualify),
+		makeTime =
+		VALUES(makeTime),
+		metarial =
+		VALUES(metarial),
+		strength =
+		VALUES(strength),
+		price =
+		VALUES(price)
+	</insert>
+	<!-- 批量插入8 -->
+	<insert id="insertConfigLove">
+		insert into config_love (food_level, number)
+		VALUES
+		<foreach collection="configLoveList" item="item" index="index"
+			separator=",">
+			(#{item.foodLevel,jdbcType=INTEGER},
+			#{item.number,jdbcType=INTEGER})
+
+		</foreach>
+		ON DUPLICATE KEY UPDATE number =
+		VALUES(number)
+	</insert>
+	<!-- 批量插入9 -->
+	<insert id="insertConfigManor">
+		insert into config_manor (id, buildId, `level`,
+		needGold, time)
+		VALUES
+		<foreach collection="configManorList" item="item" index="index"
+			separator=",">
+			(#{item.id,jdbcType=INTEGER},
+			#{item.buildid,jdbcType=INTEGER}, #{item.level,jdbcType=INTEGER},
+			#{item.needgold,jdbcType=VARCHAR}, #{item.time,jdbcType=INTEGER})
+
+		</foreach>
+		ON
+		DUPLICATE KEY UPDATE buildId = VALUES(buildId),
+		`level`=
+		VALUES(`level`),
+		needGold =
+		VALUES(needGold),
+		time =
+		VALUES(time)
+	</insert>
+	<!-- 批量插入10 -->
+	<insert id="insertConfigOrder">
+		insert into config_order (id, task_level, type,
+		task_qualify,
+		main_reward, gold_reward,
+		zuanshi_reward, request_number,
+		qualify_round,
+		food_round)
+		VALUES
+		<foreach collection="configOrderList" item="item" index="index"
+			separator=",">
+			(#{item.id,jdbcType=INTEGER},
+			#{item.taskLevel,jdbcType=INTEGER}, #{item.type,jdbcType=INTEGER},
+			#{item.taskQualify,jdbcType=INTEGER},
+			#{item.mainReward,jdbcType=VARCHAR},
+			#{item.goldReward,jdbcType=INTEGER},
+			#{item.zuanshiReward,jdbcType=INTEGER},
+			#{item.requestNumber,jdbcType=INTEGER},
+			#{item.qualifyRound,jdbcType=VARCHAR},
+			#{item.foodRound,jdbcType=VARCHAR})
+
+		</foreach>
+		ON DUPLICATE KEY UPDATE task_level
+		= VALUES(task_level),
+		type =
+		VALUES(type),
+		task_qualify =
+		VALUES(task_qualify),
+		main_reward =
+		VALUES(main_reward),
+		gold_reward =
+		VALUES(gold_reward),
+		zuanshi_reward =
+		VALUES(zuanshi_reward),
+		request_number =
+		VALUES(request_number),
+		qualify_round =
+		VALUES(qualify_round),
+		food_round =
+		VALUES(food_round)
+	</insert>
+	<!-- 批量插入11 -->
+	<insert id="insertConfigRate">
+		insert into config_rate (rate_level, name, logo,
+		start_level, task,
+		need_gold
+		)
+		VALUES
+		<foreach collection="configRateList" item="item" index="index"
+			separator=",">
+			(#{item.rateLevel,jdbcType=INTEGER},
+			#{item.name,jdbcType=VARCHAR}, #{item.logo,jdbcType=VARCHAR},
+			#{item.startLevel,jdbcType=INTEGER}, #{item.task,jdbcType=VARCHAR},
+			#{item.needGold,jdbcType=INTEGER}
+			)
+
+		</foreach>
+		ON DUPLICATE KEY UPDATE name =
+		VALUES(name),
+		logo = VALUES(logo),
+		start_level = VALUES(start_level),
+		task =
+		VALUES(task),
+		need_gold =
+		VALUES(need_gold)
+	</insert>
+	<!-- 批量插入12 -->
+	<insert id="insertConfigResearch">
+		insert into config_research (id, foodId, foodName,
+		`level`, reward,
+		strengh,
+		time, usePower)
+		VALUES
+		<foreach collection="configResearchList" item="item" index="index"
+			separator=",">
+			(#{item.id,jdbcType=INTEGER},
+			#{item.foodid,jdbcType=INTEGER}, #{item.foodname,jdbcType=VARCHAR},
+			#{item.level,jdbcType=INTEGER}, #{item.reward,jdbcType=VARCHAR},
+			#{item.strengh,jdbcType=INTEGER},
+			#{item.time,jdbcType=INTEGER},
+			#{item.usepower,jdbcType=INTEGER})
+
+		</foreach>
+		ON DUPLICATE KEY UPDATE foodId =
+		VALUES(foodId),
+		foodName =
+		VALUES(foodName),
+		`level` =
+		VALUES(`level`),
+		reward =
+		VALUES(reward),
+		strengh =
+		VALUES(strengh),
+		time =
+		VALUES(time),
+		usePower =
+		VALUES(usePower)
+	</insert>
+	<!-- 批量插入13 -->
+	<insert id="insertConfigResources">
+		insert into config_resources (id, buildId, `level`,
+		output,
+		maxCapacity)
+		VALUES
+		<foreach collection="configResourcesList" item="item" index="index"
+			separator=",">
+			(#{item.id,jdbcType=INTEGER},
+			#{item.buildid,jdbcType=INTEGER}, #{item.level,jdbcType=INTEGER},
+			#{item.output,jdbcType=INTEGER},
+			#{item.maxcapacity,jdbcType=INTEGER})
+
+		</foreach>
+		ON DUPLICATE KEY UPDATE buildId
+		= VALUES(buildId),
+		`level` =
+		VALUES(`level`),
+		output =
+		VALUES(output),
+		maxCapacity =
+		VALUES(maxCapacity)
+	</insert>
+	<!-- 批量插入 14 -->
+	<insert id="insertConfigRestaurant">
+		insert into config_restaurant (`level`, area, loveLimit,
+		maxChef,
+		maxEmploy)
+		VALUES
+		<foreach collection="configRestaurantList" item="item" index="index"
+			separator=",">
+			(#{item.level,jdbcType=INTEGER},
+			#{item.area,jdbcType=INTEGER}, #{item.lovelimit,jdbcType=INTEGER},
+			#{item.maxchef,jdbcType=INTEGER}, #{item.maxemploy,jdbcType=INTEGER})
+		</foreach>
+		ON DUPLICATE KEY UPDATE area = VALUES(area),
+		loveLimit =
+		VALUES(loveLimit),
+		maxChef = VALUES(maxChef),
+		maxEmploy =
+		VALUES(maxEmploy)
+	</insert>
+	<!-- 批量插入 15 -->
+	<insert id="insertConfigRole">
+		insert into config_role (roleid, `describe`, Resources,
+		Resources2,
+		`Remarks`, dialogue
+		)
+		VALUES
+		<foreach collection="configRoleList" item="item" index="index"
+			separator=",">
+			(#{item.roleid,jdbcType=INTEGER},
+			#{item.describe,jdbcType=VARCHAR},
+			#{item.resources,jdbcType=VARCHAR},
+			#{item.resources2,jdbcType=VARCHAR},
+			#{item.remarks,jdbcType=VARCHAR},
+			#{item.dialogue,jdbcType=VARCHAR}
+			)
+
+		</foreach>
+		ON DUPLICATE KEY UPDATE `describe` = VALUES(`describe`),
+		Resources=VALUES(Resources),
+		Resources2 =
+		VALUES(Resources2),
+		`Remarks` =
+		VALUES(`Remarks`),
+		dialogue =
+		VALUES(dialogue)
+	</insert>
+	<!-- 批量插入16 -->
+	<insert id="insertConfigSkill">
+		insert into config_skill (id, foodId, temp,
+		request, rewardType, reward
+		)
+		VALUES
+		<foreach collection="configSkillList" item="item" index="index"
+			separator=",">
+			(#{item.id,jdbcType=INTEGER},
+			#{item.foodid,jdbcType=INTEGER}, #{item.temp,jdbcType=INTEGER},
+			#{item.request,jdbcType=INTEGER},
+			#{item.rewardtype,jdbcType=INTEGER},
+			#{item.reward,jdbcType=VARCHAR}
+			)
+
+		</foreach>
+		ON DUPLICATE KEY UPDATE foodId = VALUES(foodId),
+		temp = VALUES(temp),
+		request =
+		VALUES(request),
+		rewardType =
+		VALUES(rewardType),
+		reward =
+		VALUES(reward)
+	</insert>
+	<!-- 批量插入 17 -->
+	<insert id="insertConfigStrength">
+		insert into config_strength (id, foodId, strength,
+		crit, addition)
+		VALUES
+		<foreach collection="configStrengthList" item="item" index="index"
+			separator=",">
+			(#{item.id,jdbcType=INTEGER},
+			#{item.foodid,jdbcType=INTEGER}, #{item.strength,jdbcType=INTEGER},
+			#{item.crit,jdbcType=INTEGER}, #{item.addition,jdbcType=INTEGER})
+
+		</foreach>
+		ON DUPLICATE KEY UPDATE foodId = VALUES(foodId),
+		strength =
+		VALUES(strength),
+		crit =
+		VALUES(crit),
+		addition =
+		VALUES(addition)
+	</insert>
+	<!-- 批量插入 18 -->
+	<insert id="insertConfigTask">
+		insert into config_task (id, `describe`, `condition`,
+		parament)
+		VALUES
+		<foreach collection="configTaskList" item="item" index="index"
+			separator=",">
+			(#{item.id,jdbcType=INTEGER},
+			#{item.describe,jdbcType=VARCHAR},
+			#{item.condition,jdbcType=INTEGER},
+			#{item.parament,jdbcType=VARCHAR})
+		</foreach>
+		ON DUPLICATE KEY UPDATE `describe`=
+		VALUES(`describe`),
+		`condition` =
+		VALUES(`condition`),
+		parament =
+		VALUES(parament)
+	</insert>
+
+
+	<sql id="resourcesParam">
+		id,
+		buildId,
+		`level`,
+		output,
+		maxCapacity
+	</sql>
+
+	<!-- 用户表所有参数 -->
+	<sql id="researchParam">
+		id,
+		foodId,
+		foodName,
+		`level`,
+		reward,
+		strengh,
+		time,
+		usePower
+	</sql>
+
+	<!-- 用户表所有参数 -->
+	<sql id="manorParam">
+		id,
+		buildId,
+		`level`,
+		needGold,
+		time
+	</sql>
+
+	<!-- 用户表所有参数 -->
+	<sql id="foodParam">
+		foodId,
+		foodName,
+		foodLogo,
+		foodLevel,
+		foodType,
+		foodQualify,
+		makeTime,
+		metarial,
+		strength,
+		price
+	</sql>
+
+	<sql id="skillParam">
+		id,
+		foodId,
+		temp,
+		request,
+		rewardType,
+		reward
+	</sql>
+
+	<sql id="strengthParam">
+		id,
+		foodId,
+		strength,
+		crit,
+		addition
+
+	</sql>
+
+	<sql id="roleParam">
+		`describe`,
+		roleid,
+		Resources,
+		Resources2,
+		type,
+		weight,
+		increase,
+		rounds,
+		Remarks,
+		dialogue,
+		reward
+	</sql>
+
+	<sql id="restaurantParam">
+		`level`,
+		area,
+		lovelimit,
+		maxChef,
+		maxEmploy
+	</sql>
+
+	<sql id="facilitiesParam">
+		id,
+		facilitiesId,
+		`level`,
+		attribute,
+		needGold,
+		needLevel
+	</sql>
+</mapper>

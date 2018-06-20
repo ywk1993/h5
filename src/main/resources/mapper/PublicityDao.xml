@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.muzhi.dao.PublicityDao">
+  <resultMap id="BaseResultMap" type="com.muzhi.model.Publicity">
+    <id column="uid" jdbcType="INTEGER" property="uid" />
+    <result column="publicity_id" jdbcType="INTEGER" property="publicityId" />
+    <result column="free_time" jdbcType="INTEGER" property="freeTime" />
+    <result column="fame" jdbcType="INTEGER" property="fame" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from publicity
+    where uid = #{uid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.muzhi.model.Publicity">
+    insert into publicity (uid, publicity_id, free_time, 
+      fame)
+    values (#{uid,jdbcType=INTEGER}, #{publicityId,jdbcType=INTEGER}, #{freeTime,jdbcType=INTEGER}, 
+      #{fame,jdbcType=INTEGER})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.muzhi.model.Publicity">
+    update publicity
+    set free_time = #{freeTime,jdbcType=INTEGER},
+      fame = #{fame,jdbcType=INTEGER}
+    where uid = #{uid,jdbcType=INTEGER}
+    and publicity_id = #{publicityId,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select uid, publicity_id, free_time, fame
+    from publicity
+    where uid = #{uid,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select uid, publicity_id, free_time, fame
+    from publicity
+  </select>
+  <select id="selectByPublicityId" resultMap="BaseResultMap">
+  	select uid, publicity_id, free_time, fame
+    from publicity
+    where uid = #{userId,jdbcType=INTEGER}
+    and publicity_id = #{publicityId,jdbcType=INTEGER}
+  </select>
+  <!-- 获取用户的宣传名气 -->
+  <select id="getPublicityFame" resultType="Integer">
+  	select sum(fame) from publicity where uid = #{userId,jdbcType=INTEGER}
+  </select>
+</mapper>

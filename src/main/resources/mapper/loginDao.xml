@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.muzhi.dao.LoginDao">
+	<insert id="insert" parameterType="com.muzhi.model.Login" useGeneratedKeys="true" keyProperty="id">
+		insert into login (username, passwd,registerTime,openid,nickname,avatar_url)
+		values (#{username}, #{passwd},#{registerTime},#{openid},#{nickName},#{avatarUrl});
+	</insert>
+
+	<update id="updateObject" parameterType="com.muzhi.model.Login">
+		UPDATE login SET `id`= #{id}, `username`=#{username}, `passwd`=#{passwd}, `registerTime`=#{registerTime}, `openid`= #{openid}, `nickname`=#{nickName}, `avatar_url`=#{avatarUrl} WHERE (`id`=#{id});
+	</update>
+
+	<select id="selectOne" parameterType="com.muzhi.model.Login"
+		resultType="com.muzhi.model.Login">
+		select * from login
+		where username = #{username} and passwd = #{passwd}
+	</select>
+	<select id="selectById" resultType="java.lang.String">
+		select uid from login
+		where id = #{id}
+	</select>
+	
+	<select id="selectFromWeixin" parameterType="java.lang.String"
+		resultType="java.lang.String">
+		select username from login
+		where openid = #{openid} limit 1
+	</select>
+	
+	<update id="updateUid">
+		update login set uid = #{uid} where id = #{id}
+	</update>
+	
+	<update id="updateUsername">
+		update login set username = #{username} where id = #{id}
+	</update>
+	
+	<select id="getUserIdByUid" resultType="Integer">
+		select id from login where uid = #{uid}
+	</select>
+	
+	<select id="selectByPrimaryKey" resultType="com.muzhi.model.Login">
+		select * from login where id = #{id}
+	</select>
+</mapper>

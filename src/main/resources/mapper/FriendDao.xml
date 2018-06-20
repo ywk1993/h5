@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.muzhi.dao.FriendDao">
+  	<insert id="insertN">
+  	replace INTO `friend` (id, friendid)
+		VALUES
+		((select * from (select id as self from login where uid = #{id} union all select id as others from login where uid = #{friendid} ) t limit 1), (select * from (select id as self from login where uid = #{id} union all select id as others from login where uid = #{friendid} ) t limit 1,2));
+	replace INTO `friend` (id, friendid)
+		VALUES
+		((select * from (select id as self from login where uid = #{id} union all select id as others from login where uid = #{friendid} ) t limit 1,2), (select * from (select id as self from login where uid = #{id} union all select id as others from login where uid = #{friendid} ) t limit 1))	
+	</insert>
+
+	<resultMap type="com.muzhi.model.vo.FriendVo" id="friendVo">
+		<!-- <association property="friends">
+			<result column="id" property="id"/>
+			<result column="friendid" property="friendid"/>
+		</association>
+		
+		<association property="friends">
+			<result column="friendid" property="friendid"/>		
+			<result column="nickname" property="nickname"/>
+			<result column="openid" property="openid"/>
+			<result column="avatar_url" property="avatarUrl"/>
+		</association> -->
+	
+		 <collection property="friends" javaType="java.util.ArrayList" ofType="com.muzhi.model.Friend">
+			<result column="id" property="id" javaType="Integer" jdbcType="INTEGER"/>
+			<result column="friendid" property="friendid" javaType="Integer" jdbcType="INTEGER"/>
+		</collection>
+		<!-- <collection property="weixins" javaType="java.util.ArrayList" >
+			<result column="friendid" property="friendid"/>		
+			<result column="nickname" property="nickname"/>
+			<result column="openid" property="openid"/>
+			<result column="avatar_url" property="avatarUrl"/>
+		</collection>  -->
+	</resultMap>
+	
+	<!-- <resultMap type="com.muzhi.model.Friend" id="friend">
+		<result column="id" property="id"/>
+		<result column="friendid" property="friendid"/>
+	</resultMap>
+	
+	<resultMap type="com.muzhi.model.vo.Weixin" id="weixin">
+		<result column="friendid" property="friendid"/>		
+		<result column="nickname" property="nickname"/>
+		<result column="openid" property="openid"/>
+		<result column="avatar_url" property="avatarUrl"/> 
+	</resultMap>-->
+
+	<resultMap type="com.muzhi.model.vo.Friends" id="BaseMap">
+		<result column="username" property="username"/>
+		<result column="uid" property="friendid"/>		
+		<result column="nickname" property="nickname"/>
+		<result column="openid" property="openid"/>
+		<result column="avatar_url" property="avatarUrl"/> 
+		<result column="rank" property="rank"/>
+		<result column="name" property="rankName"/>
+	</resultMap>
+
+	<select id="selectFriendsList" parameterType="com.muzhi.model.Friend" resultMap="BaseMap">
+		select t.username, t.id, t.uid,t.nickname, t.openid, t.avatar_url, r.start_level as rank, r.name from (
+		SELECT
+				*
+				FROM
+					login l
+				WHERE
+					l.id IN (
+						SELECT
+							friendid
+						FROM
+							friend
+						WHERE
+							id = #{id}
+					)
+		) t LEFT JOIN rank r on t.id = r.id
+		<!-- resultType="com.muzhi.model.Friend">
+		select
+		<include refid="colunm_param"></include>
+		from friend
+		<include refid="Where_Clause"></include> -->
+	</select>
+	
+	<select id="selectStrangers" parameterType="com.muzhi.model.Friend" resultMap="BaseMap">
+	select * from (
+		select t.username, t.id, t.uid,t.nickname, t.openid, t.avatar_url, r.start_level as rank, r.name from (
+		SELECT
+				*
+				FROM
+					login l
+				WHERE
+					l.id NOT IN (
+						SELECT
+							friendid
+						FROM
+							friend
+						WHERE
+							id = #{id}
+					)
+		) t LEFT JOIN rank r on t.id = r.id ) tt where tt.id != #{id} limit 10
+	</select>
+	
+	<select id="selectList" parameterType="com.muzhi.model.Friend"
+		resultType="com.muzhi.model.Friend">
+		select
+		<include refid="colunm_param"></include>
+		from friend
+		<include refid="Where_Clause"></include>
+	</select>
+	
+	<select id="getOneFriend" resultType="com.muzhi.model.Friend">
+		select * from friend where id = #{userId} and friendid = #{friendId}
+	</select>
+	<!-- 删除好友 -->
+	<delete id="deleteFriend" >
+		delete from friend where id = #{userId} and friendid = #{friendId}
+	</delete>
+	
+	<sql id="colunm_param">
+		id, friendid
+	</sql>
+	
+	<sql id="Where_Clause">
+		<where>
+			<choose>
+				<when test="id != null">
+					AND id = #{id}
+				</when>
+				<when test="friendid != null">
+					AND friendid = #{friendid}
+				</when>
+			</choose>
+		</where>
+	</sql>
+	
+</mapper>
